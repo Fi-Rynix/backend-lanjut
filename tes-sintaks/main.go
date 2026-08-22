@@ -17,4 +17,13 @@ func main() {
 	fmt.Println("Tinggi:", tinggi)
 	fmt.Println("Aku mahasiswa?:", status)
 	fmt.Println("Tetangga Ngawi:", ngawi)
+	
+	// map
+	mahasiswa := map[string]string{
+		"Ihya": "Raja Iblis",
+		"Udin": "Raja Karbit",
+		"Vito": "Raja Suki",
+	}
+	
+	fmt.Println("Mahasiswa:", mahasiswa)
 }
