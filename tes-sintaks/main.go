@@ -11,6 +11,7 @@ func main() {
 	tinggi := 167.67
 	ngawi := []string{"Amba", "Rusdi", "Vito", "Gatot"}
 
+	fmt.Println("")
 	fmt.Println("Nama:", nama)
 	fmt.Println("Angka favorit:", angka)
 	fmt.Println("Panjang:", panjang)
@@ -24,6 +25,27 @@ func main() {
 		"Udin": "Raja Karbit",
 		"Vito": "Raja Suki",
 	}
+	fmt.Println("")
+	fmt.Println("Isi full map:", mahasiswa)
+
+	// tambah
+	mahasiswa["Rizki"] = "Raja Jomok"
 	
-	fmt.Println("Mahasiswa:", mahasiswa)
+	// cek
+	value, rilkah := mahasiswa["Rizki"]
+	if rilkah {
+		fmt.Println("Julukan:", value)
+	} else {
+		fmt.Println("Data tidak ditemukan")
+	}
+
+	// hapus
+	delete(mahasiswa, "Ihya")
+
+	// looping
+	for nama, julukan := range mahasiswa {
+		fmt.Println(nama, ":", julukan)
+	}
+
+
 }
