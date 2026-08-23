@@ -102,11 +102,23 @@ func main() {
 	fmt.Println("")
 	fmt.Println(mahasiswa1.GetInfo())
 
+	fmt.Println("")
 	mahasiswa1.UpdateGrade(4.00)
 	fmt.Println("After:")
 	fmt.Println(mahasiswa1.GetInfo())
 
 	fmt.Println("")
+
+	mahasiswa1.Activate()
+	fmt.Println("Setelah after:")
+	fmt.Println(mahasiswa1.GetInfo())
+
+	mahasiswa1.Deactivate()
+	fmt.Println("Setelah after after:")
+	fmt.Println(mahasiswa1.GetInfo())
+
+	fmt.Println("")
+	
 }
 
 
@@ -140,6 +152,14 @@ func (sr Student) GetInfo() string {
 	)
 }
 
-func (sr *Student) UpdateGrade(grade float64) {
-    sr.Grade = grade
+func (sr *Student) UpdateGrade(gradeBaru float64) {
+    sr.Grade = gradeBaru
+}
+
+func (sr *Student) Activate() {
+    sr.IsActive = true
+}
+
+func (sr *Student) Deactivate() {
+    sr.IsActive = false
 }
