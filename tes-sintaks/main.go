@@ -92,15 +92,23 @@ func main() {
 
 
 	// struct
-	student := Student{
+	mahasiswa1 := Student{
 	ID:       1,
 	Name:     "Ihya",
 	Grade:    3.99,
 	IsActive: false,
 	}
 
+	fmt.Println("")
+	fmt.Println(mahasiswa1.GetInfo())
 
+	mahasiswa1.UpdateGrade(4.00)
+	fmt.Println("After:")
+	fmt.Println(mahasiswa1.GetInfo())
+
+	fmt.Println("")
 }
+
 
 func swapPointer(a, b *int) {
 	temp := *a
@@ -130,4 +138,8 @@ func (sr Student) GetInfo() string {
 	return fmt.Sprintf(
 		"ID: %d, Name: %s, Grade: %.2f, Active: %t", sr.ID, sr.Name, sr.Grade, sr.IsActive,
 	)
+}
+
+func (sr *Student) UpdateGrade(grade float64) {
+    sr.Grade = grade
 }
