@@ -79,6 +79,7 @@ func main() {
         "Vitomok",
     }
 
+	fmt.Println("")
 	updateSlice(&sukiLiar, "Reza Kecap")
 	fmt.Println("After update:", sukiLiar)
 
