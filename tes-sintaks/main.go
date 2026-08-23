@@ -27,6 +27,7 @@ func main() {
 	}
 	fmt.Println("")
 	fmt.Println("Isi full map:", mahasiswa)
+	fmt.Println("")
 
 	// tambah
 	mahasiswa["Rizki"] = "Raja Jomok"
@@ -39,13 +40,40 @@ func main() {
 		fmt.Println("Data tidak ditemukan")
 	}
 
+	value2 := mahasiswa["Vito"]
+	fmt.Println("Julukan:", value2)
+
+	value3 := mahasiswa["Fedo"]
+	fmt.Println("Julukan:", value3)
+
 	// hapus
 	delete(mahasiswa, "Ihya")
 
 	// looping
+	fmt.Println("\nIsi map yang baru:")
 	for nama, julukan := range mahasiswa {
 		fmt.Println(nama, ":", julukan)
 	}
 
 
+}
+
+func swapPointer(a, b *int) {
+	temp := *a
+	*a = *b
+	*b = temp
+
+	fmt.Println("nilai didalam fungsi swapPointer:")
+	fmt.Println("a =", *a)
+	fmt.Println("b =", *b)
+}
+
+func swapBiasa(a, b int) {
+	temp := a
+	a = b
+	b = temp
+
+	fmt.Println("nilai didalam fungsi swapBiasa:")
+	fmt.Println("a =", a)
+	fmt.Println("b =", b)
 }
