@@ -57,6 +57,7 @@ func main() {
 
 	fmt.Println("")
 
+	// swap
 	p := 10
 	q := 20
 	r := 30
@@ -70,6 +71,17 @@ func main() {
 	println("q =", q)
 	println("r =", r)
 	println("s =", s)
+
+	// update slice
+	sukiLiar := []string{
+        "Rizkimok",
+        "Udin Karbit",
+        "Vitomok",
+    }
+
+	updateSlice(&sukiLiar, "Reza Kecap")
+	fmt.Println("After update:", sukiLiar)
+
 }
 
 func swapPointer(a, b *int) {
@@ -90,4 +102,8 @@ func swapBiasa(a, b int) {
 	fmt.Println("nilai didalam fungsi swapBiasa:")
 	fmt.Println("a =", a)
 	fmt.Println("b =", b)
+}
+
+func updateSlice(sp *[]string, newNama string) {
+    *sp = append(*sp, newNama)
 }
