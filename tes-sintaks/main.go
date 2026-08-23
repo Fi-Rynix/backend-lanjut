@@ -55,7 +55,21 @@ func main() {
 		fmt.Println(nama, ":", julukan)
 	}
 
+	fmt.Println("")
 
+	p := 10
+	q := 20
+	r := 30
+	s := 40
+
+	swapPointer(&p, &q)
+	swapBiasa(r, s)
+
+	println("\nnilai pqrs setelah kita run 2 fungsi tadi:")
+	println("p =", p)
+	println("q =", q)
+	println("r =", r)
+	println("s =", s)
 }
 
 func swapPointer(a, b *int) {
