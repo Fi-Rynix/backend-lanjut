@@ -2,6 +2,13 @@ package main
 
 import "fmt"
 
+	type Student struct {
+	ID       int
+	Name     string
+	Grade    float64
+	IsActive bool
+	}
+
 func main() {
   // deklarasi variabel
 	var nama string = "Ihya"
@@ -83,6 +90,16 @@ func main() {
 	updateSlice(&sukiLiar, "Reza Kecap")
 	fmt.Println("After update:", sukiLiar)
 
+
+	// struct
+	student := Student{
+	ID:       1,
+	Name:     "Ihya",
+	Grade:    3.99,
+	IsActive: false,
+	}
+
+
 }
 
 func swapPointer(a, b *int) {
@@ -107,4 +124,10 @@ func swapBiasa(a, b int) {
 
 func updateSlice(sp *[]string, newNama string) {
     *sp = append(*sp, newNama)
+}
+
+func (sr Student) GetInfo() string {
+	return fmt.Sprintf(
+		"ID: %d, Name: %s, Grade: %.2f, Active: %t", sr.ID, sr.Name, sr.Grade, sr.IsActive,
+	)
 }
