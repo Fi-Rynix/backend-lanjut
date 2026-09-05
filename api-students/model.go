@@ -28,3 +28,27 @@ type PatchStudentRequest struct {
 	Grade    *float64	`json:"grade,omitempty"`
 	IsActive *bool	  `json:"is_active,omitempty"`
 }
+
+type WebResponse struct {
+	Success bool
+	Message string
+	Data    any
+	Meta		*Meta
+	Errors  any
+}
+
+type Meta struct {
+	Page       int
+	Limit      int
+	Total  		 int
+	TotalPages int
+}
+
+type ListQuery struct {
+	Page     int
+	Limit    int
+	Search   string
+	Sort     string
+	Order    string
+	IsActive *bool
+}
