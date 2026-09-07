@@ -1,4 +1,4 @@
-package apistudents
+package main
 
 import (
 	"strconv"

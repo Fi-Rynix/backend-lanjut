@@ -1,4 +1,4 @@
-package apistudents
+package main
 
 type Student struct {
 	ID       int
