@@ -1,11 +1,14 @@
 package model
 
+import "time"
+
 type Student struct {
-	ID       int
-	NIM      int
-	Name     string
-	Grade    float64
-	IsActive bool
+	ID        int
+	NIM       int
+	Name      string
+	Grade     float64
+	IsActive  bool
+	CreatedAt time.Time
 }
 
 type CreateStudentRequest struct {
