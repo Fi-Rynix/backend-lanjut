@@ -77,9 +77,9 @@ func (r *studentPostgresRepository) FindAll(
 
 	sqlText := fmt.Sprintf(
 		`SELECT id, nim, name, grade, is_active, created_at
-		 FROM students%s
-		 ORDER BY %s %s
-		 LIMIT $%d OFFSET $%d`,
+		FROM students%s
+		ORDER BY %s %s
+		LIMIT $%d OFFSET $%d`,
 		where, kolomUrut[q.Sort], arah, len(args)+1, len(args)+2,
 	)
 	args = append(args, q.Limit, q.Offset())
@@ -113,7 +113,7 @@ func (r *studentPostgresRepository) FindByID(
 
 	err := r.pool.QueryRow(ctx,
 		`SELECT id, nim, name, grade, is_active, created_at
-		 FROM students WHERE id = $1`, id,
+		FROM students WHERE id = $1`, id,
 	).Scan(&s.ID, &s.NIM, &s.Name, &s.Grade, &s.IsActive, &s.CreatedAt)
 
 	if err != nil {
@@ -131,8 +131,8 @@ func (r *studentPostgresRepository) Create(
 ) (model.Student, error) {
 	err := r.pool.QueryRow(ctx,
 		`INSERT INTO students (nim, name, grade, is_active)
-		 VALUES ($1, $2, $3, $4)
-		 RETURNING id, created_at`,
+		VALUES ($1, $2, $3, $4)
+		RETURNING id, created_at`,
 		s.NIM, s.Name, s.Grade, s.IsActive,
 	).Scan(&s.ID, &s.CreatedAt)
 
@@ -151,8 +151,8 @@ func (r *studentPostgresRepository) Update(
 ) (model.Student, error) {
 	err := r.pool.QueryRow(ctx,
 		`UPDATE students SET nim = $1, name = $2, grade = $3, is_active = $4
-		 WHERE id = $5
-		 RETURNING id, nim, name, grade, is_active, created_at`,
+		WHERE id = $5
+		RETURNING id, nim, name, grade, is_active, created_at`,
 		s.NIM, s.Name, s.Grade, s.IsActive, s.ID,
 	).Scan(&s.ID, &s.NIM, &s.Name, &s.Grade, &s.IsActive, &s.CreatedAt)
 
