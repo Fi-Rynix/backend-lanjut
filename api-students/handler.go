@@ -5,9 +5,10 @@ import (
 	"strconv"
 	"strings"
 	"github.com/gofiber/fiber/v2"
+	"api-students/app/model"
 )
 
-var students []Student
+var students []model.Student
 var nextID = 1
 
 func findStudentIndex(id int) int {
@@ -19,7 +20,7 @@ func findStudentIndex(id int) int {
 	return -1
 }
 
-func cocokPencarian(s Student, kata string) bool {
+func cocokPencarian(s model.Student, kata string) bool {
 	kata = strings.ToLower(kata)
 	return strings.Contains(strings.ToLower(s.Name), kata) ||
 		strings.Contains(strings.ToLower(strconv.Itoa(s.NIM)), kata)
@@ -35,7 +36,7 @@ func paramID(c *fiber.Ctx) (int, bool) {
 
 func listStudents(c *fiber.Ctx) error {
 	q := parseListQuery(c)
-	filtered := []Student{}
+	filtered := []model.Student{}
 
 	for _, s := range students {
 		if q.IsActive != nil && s.IsActive != *q.IsActive {
@@ -46,7 +47,7 @@ func listStudents(c *fiber.Ctx) error {
 		}
 		filtered = append(filtered, s)
 	}
-	
+
 	sort.SliceStable(filtered, func(i, j int) bool {
 		var smaller bool
 		switch q.Sort {
@@ -79,7 +80,7 @@ func listStudents(c *fiber.Ctx) error {
 		end = total
 	}
 
-	return okList(c, "daftar student berhasil diambil", filtered[start:end], &Meta{
+	return okList(c, "daftar student berhasil diambil", filtered[start:end], &model.Meta{
 		Page:       q.Page,
 		Limit:      q.Limit,
 		Total:      total,
@@ -102,7 +103,7 @@ func getStudent(c *fiber.Ctx) error {
 }
 
 func createStudent(c *fiber.Ctx) error {
-	var req CreateStudentRequest
+	var req model.CreateStudentRequest
 	if err := c.BodyParser(&req); err != nil {
 		return fail(c, fiber.StatusBadRequest, "body harus berupa JSON yang valid")
 	}
@@ -123,7 +124,7 @@ func createStudent(c *fiber.Ctx) error {
 		return failValidation(c, errs)
 	}
 
-	baru := Student{
+	baru := model.Student{
 		ID:       nextID,
 		NIM:      req.NIM,
 		Name:     strings.TrimSpace(req.Name),
@@ -148,7 +149,7 @@ func replaceStudent(c *fiber.Ctx) error {
 		return fail(c, fiber.StatusNotFound, "student tidak ditemukan")
 	}
 
-	var req UpdateStudentRequest
+	var req model.UpdateStudentRequest
 	if err := c.BodyParser(&req); err != nil {
 		return fail(c, fiber.StatusBadRequest, "body harus berupa JSON yang valid")
 	}
@@ -183,7 +184,7 @@ func patchStudent(c *fiber.Ctx) error {
 		return fail(c, fiber.StatusNotFound, "student tidak ditemukan")
 	}
 
-	var req PatchStudentRequest
+	var req model.PatchStudentRequest
 	if err := c.BodyParser(&req); err != nil {
 		return fail(c, fiber.StatusBadRequest, "body harus berupa JSON yang valid")
 	}
