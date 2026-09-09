@@ -12,8 +12,6 @@ import (
 	"api-students/route"
 )
 
-// NewApp merakit aplikasi: membuat instance Fiber, memasang middleware,
-// lalu mendaftarkan route. File ini adalah tempat seluruh bagian bertemu.
 func NewApp(logger *slog.Logger, pool *pgxpool.Pool, studentService *service.StudentService) *fiber.App {
 	app := fiber.New(fiber.Config{
 		AppName:      GetEnv("APP_NAME", "Praktikum Backend Lanjut"),
@@ -23,7 +21,6 @@ func NewApp(logger *slog.Logger, pool *pgxpool.Pool, studentService *service.Stu
 	middleware.Register(app, logger)
 	route.Register(app, pool, studentService)
 
-	// Penampung terakhir untuk URL yang tidak dikenal.
 	app.Use(func(c *fiber.Ctx) error {
 		return helper.Fail(c, fiber.StatusNotFound, "endpoint tidak ditemukan")
 	})
@@ -31,8 +28,6 @@ func NewApp(logger *slog.Logger, pool *pgxpool.Pool, studentService *service.Stu
 	return app
 }
 
-// newErrorHandler adalah jaring pengaman terakhir: error yang tidak
-// tertangani di service berakhir di sini dengan format yang tetap konsisten.
 func newErrorHandler(logger *slog.Logger) fiber.ErrorHandler {
 	return func(c *fiber.Ctx, err error) error {
 		status := fiber.StatusInternalServerError
