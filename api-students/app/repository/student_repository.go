@@ -27,6 +27,7 @@ var kolomUrut = map[string]string{
 type StudentRepository interface {
 	FindAll(ctx context.Context, q model.ListQuery) ([]model.Student, int, error)
 	FindByID(ctx context.Context, id int) (model.Student, error)
+	FindJadwalByNIM(ctx context.Context, nim string) (model.JadwalKuliah, error)
 	Create(ctx context.Context, s model.Student) (model.Student, error)
 	Update(ctx context.Context, s model.Student) (model.Student, error)
 	Delete(ctx context.Context, id int) error
@@ -39,6 +40,8 @@ type studentPostgresRepository struct {
 func NewStudentRepository(pool *pgxpool.Pool) StudentRepository {
 	return &studentPostgresRepository{pool: pool}
 }
+
+func
 
 func buildFilter(q model.ListQuery) (string, []any) {
 	where := " WHERE 1 = 1"
@@ -188,4 +191,24 @@ func isUniqueViolation(err error) bool {
 		return pgErr.Code == "23505"
 	}
 	return false
+}
+
+
+func FindJadwalByNIM(ctx context.Context, pool *pgxpool.Pool, nim string) (model.JadwalKuliah, error) {
+	var j model.JadwalKuliah
+
+	err := pool.QueryRow(ctx,
+		`SELECT id_kuliah, id_student, mata_kuliah, hari
+		FROM jadwal_kuliah left join students s on jadwal_kuliah.id_student = s.id
+		WHERE s.NIM = $1`, nim,
+	).Scan(&j.IDKuliah, &j.IDStudent, &j.MataKuliah, &j.Hari)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return model.JadwalKuliah{}, ErrNotFound
+		}
+		return model.JadwalKuliah{}, fmt.Errorf("mengambil jadwal kuliah: %w", err)
+	}
+
+	return j, nil
 }

@@ -57,6 +57,23 @@ func (s *StudentService) Get(c *fiber.Ctx) error {
 	return helper.Success(c, fiber.StatusOK, "student ditemukan", student)
 }
 
+func (s *StudentService) GetJadwalKuliah(c *fiber.Ctx) error {
+	ctx, cancel := helper.RequestContext(c)
+	defer cancel()
+
+	nim := c.Params("nim")
+	if nim == "" {
+		return helper.Fail(c, fiber.StatusBadRequest, "nim harus diisi")
+	}
+
+	jadwalKuliah, err := s.repo.FindJadwalByNIM(ctx, nim)
+	if err != nil {
+		return translateError(c, err, "gagal mengambil data jadwal kuliah")
+	}
+
+	return helper.Success(c, fiber.StatusOK, "jadwal kuliah ditemukan", jadwalKuliah)
+}
+
 func (s *StudentService) Create(c *fiber.Ctx) error {
 	ctx, cancel := helper.RequestContext(c)
 	defer cancel()
@@ -171,8 +188,6 @@ func (s *StudentService) Delete(c *fiber.Ctx) error {
 	return helper.NoContent(c)
 }
 
-// translateError memetakan error milik repository menjadi status HTTP.
-// Dipakai lintas method di service ini.
 func translateError(c *fiber.Ctx, err error, pesanUmum string) error {
 	switch {
 	case errors.Is(err, repository.ErrNotFound):

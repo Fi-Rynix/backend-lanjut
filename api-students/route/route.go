@@ -12,10 +12,6 @@ import (
 	"api-students/middleware"
 )
 
-// Register memetakan URL ke method pada service.
-//
-// Perhatikan isi file ini: tidak ada logika bisnis, tidak ada query,
-// tidak ada validasi. Hanya daftar alamat dan siapa yang melayaninya.
 func Register(app *fiber.App, pool *pgxpool.Pool, studentService *service.StudentService) {
 	api := app.Group("/api/v1")
 
@@ -24,13 +20,13 @@ func Register(app *fiber.App, pool *pgxpool.Pool, studentService *service.Studen
 	students := api.Group("/students", middleware.RequireJSON)
 	students.Get("/", studentService.List)
 	students.Get("/:id", studentService.Get)
+	students.Get("/:nim", studentService.GetJadwalKuliah)
 	students.Post("/", studentService.Create)
 	students.Put("/:id", studentService.Replace)
 	students.Patch("/:id", studentService.Patch)
 	students.Delete("/:id", studentService.Delete)
 }
 
-// healthCheck melaporkan kondisi layanan beserta databasenya.
 func healthCheck(pool *pgxpool.Pool) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		ctx, cancel := context.WithTimeout(c.UserContext(), 2*time.Second)
