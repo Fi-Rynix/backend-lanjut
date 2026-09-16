@@ -27,6 +27,7 @@ var kolomUrut = map[string]string{
 type StudentRepository interface {
 	FindAll(ctx context.Context, q model.ListQuery) ([]model.Student, int, error)
 	FindByID(ctx context.Context, id int) (model.Student, error)
+	FindByUsername(ctx context.Context, username string) (model.Student, error)
 	Create(ctx context.Context, s model.Student) (model.Student, error)
 	Update(ctx context.Context, s model.Student) (model.Student, error)
 	Delete(ctx context.Context, id int) error
@@ -76,10 +77,10 @@ func (r *studentPostgresRepository) FindAll(
 	}
 
 	sqlText := fmt.Sprintf(
-		`SELECT id, nim, name, grade, is_active, created_at
-		FROM students%s
-		ORDER BY %s %s
-		LIMIT $%d OFFSET $%d`,
+		`SELECT id, nim, name, grade, is_active, role, created_at
+		 FROM students%s
+		 ORDER BY %s %s
+		 LIMIT $%d OFFSET $%d`,
 		where, kolomUrut[q.Sort], arah, len(args)+1, len(args)+2,
 	)
 	args = append(args, q.Limit, q.Offset())
@@ -94,7 +95,7 @@ func (r *studentPostgresRepository) FindAll(
 	for rows.Next() {
 		var s model.Student
 		if err := rows.Scan(&s.ID, &s.NIM, &s.Name, &s.Grade,
-			&s.IsActive, &s.CreatedAt); err != nil {
+			&s.IsActive, &s.Role, &s.CreatedAt); err != nil {
 			return nil, 0, fmt.Errorf("membaca baris student: %w", err)
 		}
 		hasil = append(hasil, s)
@@ -112,9 +113,9 @@ func (r *studentPostgresRepository) FindByID(
 	var s model.Student
 
 	err := r.pool.QueryRow(ctx,
-		`SELECT id, nim, name, grade, is_active, created_at
-		FROM students WHERE id = $1`, id,
-	).Scan(&s.ID, &s.NIM, &s.Name, &s.Grade, &s.IsActive, &s.CreatedAt)
+		`SELECT id, nim, name, grade, is_active, role, created_at
+		 FROM students WHERE id = $1`, id,
+	).Scan(&s.ID, &s.NIM, &s.Name, &s.Grade, &s.IsActive, &s.Role, &s.CreatedAt)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -126,14 +127,34 @@ func (r *studentPostgresRepository) FindByID(
 	return s, nil
 }
 
+func (r *studentPostgresRepository) FindByUsername(
+	ctx context.Context, username string,
+) (model.Student, error) {
+	var s model.Student
+
+	err := r.pool.QueryRow(ctx,
+		`SELECT id, nim, name, grade, is_active, role, created_at
+		 FROM students WHERE LOWER(nim::text) = LOWER($1)`, username,
+	).Scan(&s.ID, &s.NIM, &s.Name, &s.Grade, &s.IsActive, &s.Role, &s.CreatedAt)
+
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			return model.Student{}, ErrNotFound
+		}
+		return model.Student{}, fmt.Errorf("mengambil student by nim: %w", err)
+	}
+
+	return s, nil
+}
+
 func (r *studentPostgresRepository) Create(
 	ctx context.Context, s model.Student,
 ) (model.Student, error) {
 	err := r.pool.QueryRow(ctx,
-		`INSERT INTO students (nim, name, grade, is_active)
-		VALUES ($1, $2, $3, $4)
-		RETURNING id, created_at`,
-		s.NIM, s.Name, s.Grade, s.IsActive,
+		`INSERT INTO students (nim, name, grade, is_active, role)
+		 VALUES ($1, $2, $3, $4, $5)
+		 RETURNING id, created_at`,
+		s.NIM, s.Name, s.Grade, s.IsActive, s.Role,
 	).Scan(&s.ID, &s.CreatedAt)
 
 	if err != nil {
@@ -150,11 +171,11 @@ func (r *studentPostgresRepository) Update(
 	ctx context.Context, s model.Student,
 ) (model.Student, error) {
 	err := r.pool.QueryRow(ctx,
-		`UPDATE students SET nim = $1, name = $2, grade = $3, is_active = $4
-		WHERE id = $5
-		RETURNING id, nim, name, grade, is_active, created_at`,
-		s.NIM, s.Name, s.Grade, s.IsActive, s.ID,
-	).Scan(&s.ID, &s.NIM, &s.Name, &s.Grade, &s.IsActive, &s.CreatedAt)
+		`UPDATE students SET nim = $1, name = $2, grade = $3, is_active = $4, role = $5
+		 WHERE id = $6
+		 RETURNING id, nim, name, grade, is_active, role, created_at`,
+		s.NIM, s.Name, s.Grade, s.IsActive, s.Role, s.ID,
+	).Scan(&s.ID, &s.NIM, &s.Name, &s.Grade, &s.IsActive, &s.Role, &s.CreatedAt)
 
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
