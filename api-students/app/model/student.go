@@ -8,6 +8,7 @@ type Student struct {
 	Name      string
 	Grade     float64
 	IsActive  bool
+	Role      string
 	CreatedAt time.Time
 }
 
