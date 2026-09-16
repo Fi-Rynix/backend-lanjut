@@ -9,6 +9,7 @@ type Student struct {
 	Grade     float64
 	IsActive  bool
 	Role      string
+	Password  string
 	CreatedAt time.Time
 }
 
